@@ -26,9 +26,16 @@ class Yolo_thread(Thread):
         if f_model == "yolo":
             print("初始化YOLO模型")
             self.model = YOLO()
+            self.name = "yolo"
         elif f_model == "SSD":
             print("初始化SSD模型")
             self.model = SSD()
+            self.name = "SSD"
+
+    def destroy(self):
+
+        del self.model
+        return self.name
 
     def detect_image(self, frame):
 
