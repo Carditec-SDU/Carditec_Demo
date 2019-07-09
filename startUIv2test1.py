@@ -17,10 +17,7 @@ import numpy
 from PIL import Image
 from PIL import ImageTk
 from cv2 import *
-# from yolo import YOLO
-from yolo_service import *
-# import shutil
-# import pyglet
+
 
 
 class myLabel(QLabel):
@@ -2954,14 +2951,14 @@ class Ui_MainWindow(object):
         self.label_88.setFont(font)
         self.label_88.setObjectName("label_88")
         self.label_89 = QtWidgets.QLabel(self.frame_6)
-        self.label_89.setGeometry(QtCore.QRect(420, 270, 691, 441))
+        self.label_89.setGeometry(QtCore.QRect(420-15, 270+20, 691, 441))
         self.label_89.setStyleSheet("background-color:gray")
         self.label_89.setText("")
         self.label_89.setObjectName("label_89")
         self.label_89.setScaledContents(True)
         # self.label_90 = QtWidgets.QLabel(self.frame_6)
         self.label_90 = myLabel(self.frame_6)
-        self.label_90.setGeometry(QtCore.QRect(1220, 330, 131, 41))
+        self.label_90.setGeometry(QtCore.QRect(1220, 330+15, 131, 41))
         palette = QtGui.QPalette()
         brush = QtGui.QBrush(QtGui.QColor(255, 255, 255))
         brush.setStyle(QtCore.Qt.SolidPattern)
@@ -3008,7 +3005,7 @@ class Ui_MainWindow(object):
         self.label_90.setAlignment(QtCore.Qt.AlignCenter)
         self.label_90.setObjectName("label_90")
         self.label_92 = myLabel(self.frame_6)
-        self.label_92.setGeometry(QtCore.QRect(1220, 570, 131, 41))
+        self.label_92.setGeometry(QtCore.QRect(1220, 570+40, 131, 41))
         palette = QtGui.QPalette()
         brush = QtGui.QBrush(QtGui.QColor(255, 255, 255))
         brush.setStyle(QtCore.Qt.SolidPattern)
@@ -3055,7 +3052,7 @@ class Ui_MainWindow(object):
         self.label_92.setAlignment(QtCore.Qt.AlignCenter)
         self.label_92.setObjectName("label_92")
         self.label_93 = myLabel(self.frame_6)
-        self.label_93.setGeometry(QtCore.QRect(1220, 490, 131, 41))
+        self.label_93.setGeometry(QtCore.QRect(1220, 490+30, 131, 41))
         palette = QtGui.QPalette()
         brush = QtGui.QBrush(QtGui.QColor(255, 255, 255))
         brush.setStyle(QtCore.Qt.SolidPattern)
@@ -3102,7 +3099,7 @@ class Ui_MainWindow(object):
         self.label_93.setAlignment(QtCore.Qt.AlignCenter)
         self.label_93.setObjectName("label_93")
         self.label_94 = myLabel(self.frame_6)
-        self.label_94.setGeometry(QtCore.QRect(1220, 410, 131, 41))
+        self.label_94.setGeometry(QtCore.QRect(1220, 410+23, 131, 41))
         palette = QtGui.QPalette()
         brush = QtGui.QBrush(QtGui.QColor(255, 255, 255))
         brush.setStyle(QtCore.Qt.SolidPattern)
@@ -3283,8 +3280,10 @@ class Ui_MainWindow(object):
         old = self.yolo.destroy()
         if old == "SSD":
             self.yolo.run("yolo")
+            self.label_90.setText(QtCore.QCoreApplication.translate("MainWindow", "YOLO"))
         elif old == "yolo":
             self.yolo.run("SSD")
+            self.label_90.setText(QtCore.QCoreApplication.translate("MainWindow", "SSD"))
 
     def label92_clicked(self):
         fileName2, ok2 = QFileDialog.getSaveFileName(self.label_92, "file save", "/", "avi (*.avi)")
@@ -3559,10 +3558,10 @@ class Ui_MainWindow(object):
         self.label_83.setText(_translate("MainWindow", "                  ALGORITHM"))
         self.label_87.setText(_translate("MainWindow", "LET\'S START"))
         self.label_88.setText(_translate("MainWindow", "Import a picture,the website will analyze the vehicle type and corresponding unmber in the picture for you."))
-        self.label_90.setText(_translate("MainWindow", "SWITCH"))
-        self.label_92.setText(_translate("MainWindow", "DOWNLOAD"))
-        self.label_93.setText(_translate("MainWindow", "VIDEO"))
-        self.label_94.setText(_translate("MainWindow", "IMAGE"))
+        self.label_90.setText(_translate("MainWindow", "SSD"))
+        self.label_92.setText(_translate("MainWindow", "SAVE"))
+        self.label_93.setText(_translate("MainWindow", "CAMERA"))
+        self.label_94.setText(_translate("MainWindow", "LOCAL"))
         self.label_91.setText(_translate("MainWindow", "×"))
         self.label_95.setText(_translate("MainWindow", "×"))
         self.label_96.setText(_translate("MainWindow", "×"))
@@ -3579,13 +3578,19 @@ import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow
 if __name__ == '__main__':
     app = QApplication(sys.argv)
+
+    from yolo_service import *
     MainWindow = QMainWindow()
+
     ui = Ui_MainWindow()
+
     ui.setupUi(MainWindow)
     
     MainWindow.show()
     
     # ui.yolo.run("SSD")
+    
+
     ui.yolo.start()
     ui.yolo.run("SSD")
     ui.yolo.join()
