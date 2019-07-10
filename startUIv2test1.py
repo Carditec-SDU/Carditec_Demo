@@ -17,7 +17,7 @@ import numpy
 from PIL import Image
 from PIL import ImageTk
 from cv2 import *
-
+import shutil
 
 
 class myLabel(QLabel):
@@ -84,7 +84,7 @@ class Ui_MainWindow(object):
         self.video_url = video_url
         # self.yolo = YOLO()
         
-        self.yolo = Yolo_thread(1, "model_service")
+        self.yolo = Yolo_thread()
 
         self.playCapture = VideoCapture()
         self.fps = 15
@@ -93,10 +93,12 @@ class Ui_MainWindow(object):
             self.fps = self.playCapture.get(CAP_PROP_FPS)
             self.playCapture.release()
         
+        self.mainWindow = None
         # im = PIL.Image.open('logo2.png')
         # self.yolo.detect_image(im)
 
     def setupUi(self, MainWindow):
+        self.mainWindow = MainWindow
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1440, 774)
         MainWindow.setWindowFlags(Qt.FramelessWindowHint)
@@ -3279,11 +3281,27 @@ class Ui_MainWindow(object):
     def label90_clicked(self):
         old = self.yolo.destroy()
         if old == "SSD":
+            self.mainWindow.setCursor(Qt.WaitCursor)
             self.yolo.run("yolo")
             self.label_90.setText(QtCore.QCoreApplication.translate("MainWindow", "YOLO"))
+            self.mainWindow.setCursor(Qt.ArrowCursor)
         elif old == "yolo":
+            self.mainWindow.setCursor(Qt.WaitCursor)
             self.yolo.run("SSD")
             self.label_90.setText(QtCore.QCoreApplication.translate("MainWindow", "SSD"))
+            self.mainWindow.setCursor(Qt.ArrowCursor)
+        '''old = self.yolo.name
+        print("结束旧线程:", old)
+        self.yolo.join()
+        del self.yolo
+        if old=="YOLO":
+            self.yolo = SSD_thread()
+            self.yolo.start()
+            self.label_90.setText(QtCore.QCoreApplication.translate("MainWindow", "SSD"))
+        elif old=="SSD":
+            self.yolo = Yolo_thread()
+            self.yolo.start()
+            self.label_90.setText(QtCore.QCoreApplication.translate("MainWindow", "YOLO"))'''
 
     def label92_clicked(self):
         fileName2, ok2 = QFileDialog.getSaveFileName(self.label_92, "file save", "/", "avi (*.avi)")
@@ -3580,6 +3598,8 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
 
     from yolo_service import *
+    from SSD_service import *
+
     MainWindow = QMainWindow()
 
     ui = Ui_MainWindow()
@@ -3587,12 +3607,7 @@ if __name__ == '__main__':
     ui.setupUi(MainWindow)
     
     MainWindow.show()
-    
-    # ui.yolo.run("SSD")
-    
-
+        
     ui.yolo.start()
-    ui.yolo.run("SSD")
-    ui.yolo.join()
 
     sys.exit(app.exec_())

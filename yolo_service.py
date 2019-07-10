@@ -1,12 +1,16 @@
 import _thread
 from threading import Thread, Semaphore
 
+import tensorflow as tf
+import keras
+
 from yolo import YOLO 
 from SSD import SSD
 
 class Yolo_thread(Thread):
     
-    def __init__(self, threadID, name):
+    def __init__(self):
+
         '''
 
             model: 线程当前装载的模型
@@ -14,23 +18,37 @@ class Yolo_thread(Thread):
         '''
         
         Thread.__init__(self)
-        self.threadID = threadID
-        self.name = name
+        self.name = None
         self.model = None
 
 
-    def run(self, f_model):
+    def run(self, f_model="SSD"):
 
-        print("启动线程："+self.name)
+        '''
+            调用 .start 方法时，采用多线程机制加载模型
+            保证程序开始时加载模型的速度
 
-        if f_model == "yolo":
-            print("初始化YOLO模型")
-            self.model = YOLO()
-            self.name = "yolo"
-        elif f_model == "SSD":
-            print("初始化SSD模型")
+        '''
+
+        # print("启动yolo线程")
+        # print("初始化YOLO模型")
+
+        if f_model=="SSD":
+
+            # TF版的模型用tensorflow的方式调用clear_session
+
+            tf.keras.backend.clear_session()
             self.model = SSD()
             self.name = "SSD"
+        elif f_model=="yolo":
+
+            # Keras版的模型用 keras.backend方式调用clear_session
+
+            keras.backend.clear_session()   
+            self.model = YOLO()
+            self.name = "yolo"
+
+        # print("YOLO模型初始化完成")
 
     def destroy(self):
 
